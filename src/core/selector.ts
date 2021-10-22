@@ -1,13 +1,14 @@
-import { Atom,  } from '../shared/types';
 import { default as atom } from './atom';
+import { SelectorOptions, Atom } from '../shared/types';
 
-export default function selector({ key, get: reducer }) {
+export default function selector(options: SelectorOptions) {
+  const { key, get: reducer } = options;
   if (typeof reducer !== 'function') {
     throw TypeError('get must be function');
   }
 
   const result = reducer({
-    get: (atom) => {
+    get: (atom: Atom) => {
       return atom.getSnapShot();
     },
   });

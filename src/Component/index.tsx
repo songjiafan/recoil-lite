@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, createElement } from 'react';
 import createSubscription from '../kit/subscription';
 
 /**
@@ -28,9 +28,9 @@ export default function connect(atomsMap = {}) {
     
 
     render() {
-      // return (
-      //   <Component {...this.props} />
-      // )
+      return (
+        <Component {...this.props} />
+      )
     }
   }
 }

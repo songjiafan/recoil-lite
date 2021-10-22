@@ -4,8 +4,10 @@ import { EventEmitter } from 'events';
 
 export const GLOBAL_SUBSCRIPTION_KEY = 'RECOIL_GLOBAL_SUBSCRIPTION';
 
+const createEventEmitter = () => new EventEmitter();
+
 export const createAtomSubscription = (key: AtomKey): any => {
-  const instance = new EventEmitter();
+  const instance = createEventEmitter();
 
   return Object.assign(instance, {
     publish: (value: any) => instance.emit(key, value),
@@ -15,7 +17,7 @@ export const createAtomSubscription = (key: AtomKey): any => {
 }
 
 export default function createSubscription(...atoms: Atom[]) {
-  const instance = new EventEmitter();
+  const instance = createEventEmitter();
 
   let atomList = atoms;
 

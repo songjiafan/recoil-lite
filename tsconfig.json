@@ -6,7 +6,7 @@
     "declaration": true,
     "module": "es6",
     "target": "es6",
-    "jsx": "preserve",
+    "jsx": "react",
     "jsxFactory": "createElement",
     "moduleResolution": "node",
     "alwaysStrict": true,

@@ -13,6 +13,6 @@ export {
 //   connect,
 // } from './class';
 
-// export {
-//   createSubscription,
-// } from './kit';
+export {
+  isRecoilValue,
+} from './kit';
