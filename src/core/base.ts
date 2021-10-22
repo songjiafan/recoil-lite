@@ -1,35 +1,25 @@
-import { Atom } from '../shared/types';
-import { EventEmitter } from 'events';
+import { Atom, Subscription, AtomValue, AtomKey } from '../shared/types';
+import { createAtomSubscription } from '../kit/subscription';
 
-export default class BaseAtom extends EventEmitter implements Atom {
-  constructor(public value: any) {
-    super();
+export default class BaseAtom implements Atom {
+  subscription: Subscription;
+
+  // private static _SUBSCRIBE_KEY_ = '_RECOIL_LITE_UPDATE_EVENT';
+
+  constructor(public key: AtomKey, public value: AtomValue) {
+    this.subscription = createAtomSubscription(key);
   }
 
-  private static _SUBSCRIBE_KEY_ = 'RECOIL_LITE_UPDATE_EVENT';
-
-  getSnapShot = () => {
+  getSnapShot = (): AtomValue => {
     return this.value;
   }
 
   update = <T>(value: T) => {
     this.value = value;
-    return this.notify();
+    return this.subscription.publish(this.getSnapShot());
   }
 
-  subscribe = (callback): void => {
-    this.on(BaseAtom._SUBSCRIBE_KEY_, callback);
-  }
-
-  unSubscribe = (callback): void => {
-    this.removeListener(BaseAtom._SUBSCRIBE_KEY_, callback);
-  }
-  
-  private notify = (): boolean => {
-    return this.emit(BaseAtom._SUBSCRIBE_KEY_, this.getSnapShot());
-  }
-
-  static of(value) {
-    return new BaseAtom(value);
+  static of(key: AtomKey, value: AtomValue) {
+    return new BaseAtom(key, value);
   }
 }

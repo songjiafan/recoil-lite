@@ -1,18 +1,11 @@
 import BaseAtom from './base';
-import { Atom } from '../shared/types';
+import { Atom, AtomOptions, AtomKey } from '../shared/types';
 
-// export class RecoilCenter {
-//   store = new Set();
+export const store = new Map<AtomKey, Atom>();
 
-//   add(atom) {
-//     this.store.add()
-//   }
-// }
-
-const recoilStore = new Map<string, any>();
-
-export default function atom({ key, default: value }) {
-  const instance = BaseAtom.of(value);
-  recoilStore.set(key, instance);
+export default function atom(options: AtomOptions) {
+  const { key, default: value } = options;
+  const instance = BaseAtom.of(key, value);
+  store.set(key, instance);
   return instance;
 }

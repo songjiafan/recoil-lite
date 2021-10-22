@@ -1,3 +1,4 @@
+import { Atom,  } from '../shared/types';
 import { default as atom } from './atom';
 
 export default function selector({ key, get: reducer }) {
@@ -6,7 +7,9 @@ export default function selector({ key, get: reducer }) {
   }
 
   const result = reducer({
-    get: (_atom) => _atom.getSnapShot()
+    get: (atom) => {
+      return atom.getSnapShot();
+    },
   });
 
   return atom({

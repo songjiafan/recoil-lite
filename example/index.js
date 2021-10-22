@@ -19,6 +19,7 @@ const selectorAsync = selector({
     const promise = () => new Promise(resolve => {
       setTimeout(() => resolve(20), 5000)
     });
+
     const num = get(atomBase);
     const ratio = await promise();
     return num * ratio;
@@ -51,14 +52,14 @@ function UseSetRecoilStateExample() {
 }
 
 function SubscribeOne() {
-  const subscription = useRef(atomBase);
+  const atomCache = useRef(atomBase);
   const [state, setState] = useState(atomBase.getSnapShot());
 
   useEffect(() => {
-    subscription.current.subscribe(setState);
+    atomCache.current.subscription.subscribe(setState);
 
     return () => {
-      subscription.current.unSubscribe(setState);
+      atomCache.current.subscription.unSubscribe(setState);
     }
   }, []);
 
