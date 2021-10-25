@@ -8,6 +8,7 @@ const atomBase = atom({
 });
 
 const selectorBase = selector({
+  key: 'test selector',
   get: ({ get }) => {
     const num = get(atomBase);
     return num * 100;
@@ -15,6 +16,7 @@ const selectorBase = selector({
 });
 
 const selectorAsync = selector({
+  key: 'test selectorAsync',
   get: async ({ get }) => {
     const promise = () => new Promise(resolve => {
       setTimeout(() => resolve(20), 5000)
@@ -45,8 +47,15 @@ function UseRecoilValueExample() {
 
 function UseSetRecoilStateExample() {
   const setState = useSetRecoilState(atomBase);
+  const [renderTimes, setRenderTimes] = useState(1);
+
+  useEffect(() => {
+    setRenderTimes(renderTimes + 1);
+  }, [setState])
+
   return <>
     <h2>UseSetRecoilStateExample 只写</h2>
+    <span>render次数 { renderTimes }</span>
     <button onClick={() => setState(state => state + 1)}>自增</button>
   </>
 }

@@ -1,4 +1,4 @@
-import { Atom, AtomKey } from '../shared/types';
+import { Atom, AtomKey, EventCallBack, AtomValue } from '../shared/types';
 import { store } from '../core/atom';
 import { EventEmitter } from 'events';
 
@@ -6,14 +6,14 @@ export const GLOBAL_SUBSCRIPTION_KEY = 'RECOIL_GLOBAL_SUBSCRIPTION';
 
 const createEventEmitter = () => new EventEmitter();
 
-export const createAtomSubscription = (key: AtomKey): any => {
-  const instance = createEventEmitter();
+const atomEventsEmitter = createEventEmitter();
 
-  return Object.assign(instance, {
-    publish: (value: any) => instance.emit(key, value),
-    subscribe: (fn) => instance.on(key, fn),
-    unSubscribe: (fn) => instance.removeListener(key, fn),
-  })
+export const createAtomSubscription = (key: AtomKey): any => {
+  return {
+    publish: (value: AtomValue) => atomEventsEmitter.emit(key, value),
+    subscribe: (fn: EventCallBack) => atomEventsEmitter.on(key, fn),
+    unSubscribe: (fn: EventCallBack) => atomEventsEmitter.removeListener(key, fn),
+  };
 }
 
 export default function createSubscription(...atoms: Atom[]) {

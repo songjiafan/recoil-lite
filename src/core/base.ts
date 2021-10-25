@@ -1,23 +1,23 @@
 import { Atom, Subscription, AtomValue, AtomKey } from '../shared/types';
 import { createAtomSubscription } from '../kit/subscription';
 
-export default class BaseAtom implements Atom {
+export default class BaseState implements Atom {
   subscription: Subscription;
 
-  constructor(public key: AtomKey, public value: AtomValue) {
+  constructor(public key: AtomKey, private _value: AtomValue) {
     this.subscription = createAtomSubscription(key);
   }
 
   getSnapShot = (): AtomValue => {
-    return this.value;
+    return this._value;
   }
 
   update = <T>(value: T) => {
-    this.value = value;
+    this._value = value;
     return this.subscription.publish(this.getSnapShot());
   }
 
   static of(key: AtomKey, value: AtomValue) {
-    return new BaseAtom(key, value);
+    return new BaseState(key, value);
   }
 }
