@@ -1,17 +1,36 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { atom as recoilAtom, selector as recoilSelector, useRecoilState as useRecoilStateTrue, RecoilRoot } from 'recoil';
 import ReactDOM from 'react-dom';
 import { atom, selector, useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil-lite';
+
+const a = recoilAtom({
+  key: 'ccc',
+  default: 123,
+})
+
+const b = recoilSelector({
+  key: 'xxx',
+  get: ({ get }) => {
+    return get(a) * 10;
+  }
+})
 
 const atomBase = atom({
   key: 'test',
   default: 1
 });
 
+const atomBase2 = atom({
+  key: 'test2',
+  default: 99
+});
+
 const selectorBase = selector({
   key: 'test selector',
   get: ({ get }) => {
     const num = get(atomBase);
-    return num * 100;
+    const num2 = get(atomBase2);
+    return num + num2 * 10;
   }
 });
 
@@ -65,10 +84,10 @@ function SubscribeOne() {
   const [state, setState] = useState(atomBase.getSnapShot());
 
   useEffect(() => {
-    atomCache.current.subscription.subscribe(setState);
+    atomCache.current.getSubscription().subscribe(setState);
 
     return () => {
-      atomCache.current.subscription.unSubscribe(setState);
+      atomCache.current.getSubscription().unSubscribe(setState);
     }
   }, []);
 
@@ -96,6 +115,15 @@ function AsyncSelector() {
   </>
 }
 
+function FaceBookRecoil() {
+  const [v, setState] = useRecoilStateTrue(b);
+  return <>
+    <h2>facebook</h2>
+    <div>数字: { v }</div>
+    <button onClick={() => setState(v + 1)}>自增</button>
+  </>
+}
+
 class Example extends React.Component {
   render() {
     return (
@@ -106,6 +134,9 @@ class Example extends React.Component {
         <SubscribeOne />
         <Selector />
         <AsyncSelector />
+        <RecoilRoot>
+          <FaceBookRecoil></FaceBookRecoil>
+        </RecoilRoot>
       </>
     );
   }

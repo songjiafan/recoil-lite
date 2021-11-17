@@ -1,15 +1,21 @@
-import BaseState from './base';
-import { Atom, AtomOptions, AtomKey } from '../shared/types';
-
-export const store = new Map<AtomKey, Atom>();
+import BaseStateItem from './baseStateItem';
+import invariant from '../kit/invariant';
+import { store } from './store';
+import { Atom, AtomOptions, ItemType } from '../shared/types';
 
 export default function atom(options: AtomOptions) {
   const { key, default: value } = options;
-  const instance = BaseState.of(key, value);
-  if (!store.has(key)) {
-    store.set(key, instance);
-  } else {
-    throw Error('key已存在' + String(key))
-  }
+
+  invariant(key, 'key options is necessary');
+
+  const instance = new BaseStateItem({
+    key,
+    value,
+    type: ItemType.atom,
+  }); // 初始atom
+
+  store.registerEvent(instance); // 注册事件
+  store.registerDependence(instance); // 注册依赖
+
   return instance;
 }
